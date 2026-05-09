@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>API Reference — Cloud Search</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-primary: #0a0a0b;
+      --bg-secondary: #111113;
+      --bg-tertiary: #1a1a1d;
+      --text-primary: #fafafa;
+      --text-secondary: #a1a1a6;
+      --text-muted: #6b6b70;
+      --accent: #ff6b35;
+      --border: #2a2a2e;
+      --font-body: 'DM Sans', sans-serif;
+      --font-mono: 'Fira Code', monospace;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: var(--font-body); background: var(--bg-primary); color: var(--text-primary); line-height: 1.6; }
+    code { font-family: var(--font-mono); background: var(--bg-tertiary); padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.9em; }
+    pre { background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; overflow-x: auto; margin: 1rem 0; }
+    pre code { background: none; padding: 0; }
+
+    nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; background: rgba(10,10,11,0.9); backdrop-filter: blur(20px); border-bottom: 1px solid var(--border); }
+    .logo { font-size: 1.25rem; font-weight: 500; color: var(--text-primary); text-decoration: none; display: flex; align-items: center; gap: 0.5rem; }
+    .logo-icon { width: 24px; height: 24px; background: var(--accent); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; }
+    .nav-links { display: flex; gap: 2rem; list-style: none; }
+    .nav-links a { color: var(--text-secondary); text-decoration: none; font-size: 0.9rem; }
+    .nav-links a:hover { color: var(--text-primary); }
+    .nav-links a.active { color: var(--accent); }
+
+    .sidebar { position: fixed; top: 73px; left: 0; bottom: 0; width: 280px; background: var(--bg-secondary); border-right: 1px solid var(--border); padding: 2rem 0; overflow-y: auto; }
+    .sidebar-section { margin-bottom: 2rem; }
+    .sidebar-title { padding: 0.5rem 1.5rem; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); }
+    .sidebar-links { list-style: none; }
+    .sidebar-links a { display: block; padding: 0.5rem 1.5rem; color: var(--text-secondary); text-decoration: none; font-size: 0.9rem; border-left: 2px solid transparent; }
+    .sidebar-links a:hover { color: var(--text-primary); background: var(--bg-tertiary); }
+    .sidebar-links a.active { color: var(--accent); border-left-color: var(--accent); }
+
+    main { margin-left: 280px; padding: 6rem 3rem 4rem; max-width: 900px; }
+    h1 { font-size: 2.5rem; margin-bottom: 1rem; }
+    .endpoint { margin: 2rem 0; padding: 1.5rem; background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 12px; }
+    .endpoint-header { display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; }
+    .method { font-family: var(--font-mono); font-size: 0.8rem; font-weight: 600; padding: 0.3rem 0.6rem; border-radius: 4px; background: var(--accent); color: var(--bg-primary); }
+    .method.get { background: #27ca40; }
+    .method.post { background: #3b82f6; }
+    .method.put { background: #f59e0b; }
+    .method.delete { background: #ef4444; }
+    .path { font-family: var(--font-mono); font-size: 0.95rem; }
+    .endpoint h3 { font-size: 1.1rem; margin: 1rem 0 0.5rem; }
+    .endpoint p { color: var(--text-secondary); margin-bottom: 1rem; }
+    .params { margin-top: 1rem; }
+    .params h4 { font-size: 0.85rem; font-weight: 600; margin-bottom: 0.75rem; }
+    .param { display: flex; gap: 1rem; padding: 0.5rem 0; border-bottom: 1px solid var(--border); }
+    .param-name { font-family: var(--font-mono); color: var(--accent); min-width: 150px; }
+    .param-type { color: var(--text-muted); font-size: 0.85rem; }
+    .param-desc { color: var(--text-secondary); font-size: 0.9rem; }
+
+    .response-example { margin-top: 1.5rem; }
+    .response-example h4 { font-size: 0.85rem; font-weight: 600; margin-bottom: 0.75rem; color: var(--text-muted); }
+
+    @media(max-width: 1024px) { .sidebar { display: none; } main { margin-left: 0; } }
+  </style>
+</head>
+<body>
+<nav>
+  <a href="/" class="logo"><div class="logo-icon">⌕</div>Cloud Search</a>
+  <ul class="nav-links">
+    <li><a href="/index.html">Home</a></li>
+    <li><a href="/docs.html">Docs</a></li>
+    <li><a href="/api.html" class="active">API</a></li>
+  </ul>
+</nav>
+
+<aside class="sidebar">
+  <div class="sidebar-section">
+    <div class="sidebar-title">Authentication</div>
+    <ul class="sidebar-links">
+      <li><a href="#auth">API Keys</a></li>
+      <li><a href="#register">Register</a></li>
+    </ul>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-title">Indexes</div>
+    <ul class="sidebar-links">
+      <li><a href="#create-index">Create Index</a></li>
+      <li><a href="#list-indexes">List Indexes</a></li>
+      <li><a href="#get-index">Get Index</a></li>
+      <li><a href="#delete-index">Delete Index</a></li>
+    </ul>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-title">Documents</div>
+    <ul class="sidebar-links">
+      <li><a href="#add-document">Add Document</a></li>
+      <li><a href="#bulk-add">Bulk Add</a></li>
+      <li><a href="#get-document">Get Document</a></li>
+      <li><a href="#delete-document">Delete Document</a></li>
+    </ul>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-title">Search</div>
+    <ul class="sidebar-links">
+      <li><a href="#search">Search</a></li>
+    </ul>
+  </div>
+</aside>
+
+<main>
+  <h1>API Reference</h1>
+  <p style="color: var(--text-secondary); margin-bottom: 3rem;">Complete reference documentation for the Cloud Search API.</p>
+
+  <section id="auth" class="endpoint">
+    <div class="endpoint-header">
+      <span class="method post">POST</span>
+      <span class="path">/api/v1/auth/register</span>
+    </div>
+    <p>Register a new tenant and get an API key.</p>
+    <div class="params">
+      <h4>Query Parameters</h4>
+      <div class="param"><span class="param-name">email</span><span class="param-type">string</span><span class="param-desc">User email address</span></div>
+      <div class="param"><span class="param-name">name</span><span class="param-type">string</span><span class="param-desc">Display name (optional)</span></div>
+    </div>
+    <div class="response-example">
+      <h4>Response</h4>
+      <pre><code>{
+  "tenant_id": "550e8400-e29b-41d4-a716-446655440000",
+  "api_key": "cs_abc123...",
+  "name": "My App"
+}</code></pre>
+    </div>
+  </section>
+
+  <section id="create-index" class="endpoint">
+    <div class="endpoint-header">
+      <span class="method post">POST</span>
+      <span class="path">/api/v1/indexes</span>
+    </div>
+    <p>Create a new search index.</p>
+    <div class="params">
+      <h4>Request Body</h4>
+      <div class="param"><span class="param-name">name</span><span class="param-type">string</span><span class="param-desc">Index name</span></div>
+      <div class="param"><span class="param-name">settings</span><span class="param-type">object</span><span class="param-desc">Index settings (optional)</span></div>
+    </div>
+    <div class="response-example">
+      <h4>Response</h4>
+      <pre><code>{
+  "name": "products",
+  "document_count": 0,
+  "created_at": "2026-05-09T12:00:00Z"
+}</code></pre>
+    </div>
+  </section>
+
+  <section id="list-indexes" class="endpoint">
+    <div class="endpoint-header">
+      <span class="method get">GET</span>
+      <span class="path">/api/v1/indexes</span>
+    </div>
+    <p>List all indexes for the current tenant.</p>
+  </section>
+
+  <section id="add-document" class="endpoint">
+    <div class="endpoint-header">
+      <span class="method post">POST</span>
+      <span class="path">/api/v1/indexes/{index}/documents</span>
+    </div>
+    <p>Add a document to an index.</p>
+    <div class="params">
+      <h4>Path Parameters</h4>
+      <div class="param"><span class="param-name">index</span><span class="param-type">string</span><span class="param-desc">Index name</span></div>
+    </div>
+    <div class="params">
+      <h4>Request Body</h4>
+      <div class="param"><span class="param-name">document</span><span class="param-type">object</span><span class="param-desc">Document to index</span></div>
+    </div>
+    <div class="response-example">
+      <h4>Response</h4>
+      <pre><code>{
+  "status": "created",
+  "result": "created",
+  "_id": "abc123"
+}</code></pre>
+    </div>
+  </section>
+
+  <section id="bulk-add" class="endpoint">
+    <div class="endpoint-header">
+      <span class="method post">POST</span>
+      <span class="path">/api/v1/indexes/{index}/documents/_bulk</span>
+    </div>
+    <p>Bulk add multiple documents.</p>
+    <div class="params">
+      <h4>Request Body</h4>
+      <div class="param"><span class="param-name">documents</span><span class="param-type">array</span><span class="param-desc">Array of documents</span></div>
+    </div>
+  </section>
+
+  <section id="search" class="endpoint">
+    <div class="endpoint-header">
+      <span class="method post">POST</span>
+      <span class="path">/api/v1/indexes/{index}/_search</span>
+    </div>
+    <p>Search an index using OpenSearch query DSL.</p>
+    <div class="params">
+      <h4>Request Body</h4>
+      <div class="param"><span class="param-name">query</span><span class="param-type">object</span><span class="param-desc">OpenSearch query</span></div>
+      <div class="param"><span class="param-name">from</span><span class="param-type">integer</span><span class="param-desc">Pagination offset</span></div>
+      <div class="param"><span class="param-name">size</span><span class="param-type">integer</span><span class="param-desc">Results per page</span></div>
+    </div>
+    <div class="response-example">
+      <h4>Response</h4>
+      <pre><code>{
+  "took": 5,
+  "timed_out": false,
+  "hits": {
+    "total": {"value": 10},
+    "hits": [
+      {"_id": "...", "_score": 1.5, "_source": {...}}
+    ]
+  }
+}</code></pre>
+    </div>
+  </section>
+
+  <section id="delete-index" class="endpoint">
+    <div class="endpoint-header">
+      <span class="method delete">DELETE</span>
+      <span class="path">/api/v1/indexes/{index}</span>
+    </div>
+    <p>Delete an index and all its documents.</p>
+  </section>
+</main>
+</body>
+</html>

@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Getting Started — Cloud Search</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-primary: #0a0a0b;
+      --bg-secondary: #111113;
+      --bg-tertiary: #1a1a1d;
+      --text-primary: #fafafa;
+      --text-secondary: #a1a1a6;
+      --text-muted: #6b6b70;
+      --accent: #ff6b35;
+      --border: #2a2a2e;
+      --font-body: 'DM Sans', sans-serif;
+      --font-mono: 'Fira Code', monospace;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: var(--font-body); background: var(--bg-primary); color: var(--text-primary); line-height: 1.7; }
+
+    nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; background: rgba(10,10,11,0.9); backdrop-filter: blur(20px); border-bottom: 1px solid var(--border); }
+    .logo { font-size: 1.25rem; font-weight: 500; color: var(--text-primary); text-decoration: none; display: flex; align-items: center; gap: 0.5rem; }
+    .logo-icon { width: 24px; height: 24px; background: var(--accent); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; }
+    .nav-links { display: flex; gap: 2rem; list-style: none; }
+    .nav-links a { color: var(--text-secondary); text-decoration: none; font-size: 0.9rem; }
+    .nav-links a:hover { color: var(--text-primary); }
+    .nav-links a.active { color: var(--accent); }
+
+    main { margin-left: 0; padding: 5rem 2rem 4rem; max-width: 800px; margin: 0 auto; }
+    h1 { font-size: 2.5rem; margin: 2rem 0 1rem; }
+    h2 { font-size: 1.5rem; margin: 2.5rem 0 1rem; padding-top: 1rem; border-top: 1px solid var(--border); }
+    p { color: var(--text-secondary); margin-bottom: 1.5rem; }
+    code { font-family: var(--font-mono); background: var(--bg-tertiary); padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.9em; }
+    pre { background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; overflow-x: auto; margin: 1rem 0 2rem; }
+    pre code { background: none; padding: 0; }
+    .note { background: var(--bg-secondary); border-left: 3px solid var(--accent); padding: 1rem 1.5rem; border-radius: 0 8px 8px 0; margin: 1.5rem 0; }
+    .note p { margin: 0; }
+  </style>
+</head>
+<body>
+<nav>
+  <a href="/" class="logo"><div class="logo-icon">⌕</div>Cloud Search</a>
+  <ul class="nav-links">
+    <li><a href="/index.html">Home</a></li>
+    <li><a href="/docs.html" class="active">Docs</a></li>
+    <li><a href="/api.html">API</a></li>
+  </ul>
+</nav>
+
+<main>
+  <h1>Getting Started</h1>
+  <p>Add powerful full-text search to your app in minutes. This guide will walk you through your first search integration.</p>
+
+  <h2>1. Get Your API Key</h2>
+  <p>Register to get your API key. Replace <code>you@company.com</code> with your email:</p>
+  <pre><code>curl -X POST "https://api.cloudsearch.io/v1/auth/register?email=you@company.com"
+
+# Response:
+{
+  "tenant_id": "550e8400-e29b-41d4-a716-446655440000",
+  "api_key": "cs_abc123xyz...",
+  "name": "My App"
+}</code></pre>
+
+  <div class="note">
+    <p><strong>Save your API key</strong> — You'll need it for all subsequent requests. It's shown only once.</p>
+  </div>
+
+  <h2>2. Create an Index</h2>
+  <p>An index is where your documents live. Let's create one for products:</p>
+  <pre><code>curl -X POST "https://api.cloudsearch.io/v1/indexes" \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"name": "products"}'</code></pre>
+
+  <h2>3. Add Documents</h2>
+  <p>Add your first document:</p>
+  <pre><code>curl -X POST "https://api.cloudsearch.io/v1/indexes/products/documents" \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "document": {
+      "title": "iPhone 15 Pro",
+      "description": "Latest Apple flagship phone",
+      "price": 999,
+      "category": "electronics"
+    }
+  }'</code></pre>
+
+  <p>Add multiple documents at once:</p>
+  <pre><code>curl -X POST "https://api.cloudsearch.io/v1/indexes/products/documents/_bulk" \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "documents": [
+      {"title": "MacBook Air", "price": 1299},
+      {"title": "iPad Pro", "price": 999},
+      {"title": "AirPods Pro", "price": 249}
+    ]
+  }'</code></pre>
+
+  <h2>4. Search!</h2>
+  <p>Now search your documents:</p>
+  <pre><code>curl -X POST "https://api.cloudsearch.io/v1/indexes/products/_search" \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "query": {
+      "match": {
+        "title": "iPhone"
+      }
+    }
+  }'
+
+# Response:
+{
+  "took": 5,
+  "timed_out": false,
+  "hits": {
+    "total": {"value": 1},
+    "hits": [
+      {
+        "_id": "abc123",
+        "_score": 1.5,
+        "_source": {
+          "title": "iPhone 15 Pro",
+          "description": "Latest Apple flagship phone",
+          "price": 999
+        }
+      }
+    ]
+  }
+}</code></pre>
+
+  <h2>5. Advanced Queries</h2>
+  <p>Use OpenSearch query DSL for powerful searches:</p>
+  <pre><code># Fuzzy search (handles typos)
+{"query": {"fuzzy": {"title": {"value": "Ipone", "fuzziness": 2}}}}
+
+# Boolean query
+{"query": {"bool": {"must": [{"match": {"title": "iPhone"}}], "filter": [{"range": {"price": {"lte": 1500}}}}]}}
+
+# Multi-match across fields
+{"query": {"multi_match": {"query": "Apple phone", "fields": ["title^2", "description"]}}}</code></pre>
+
+  <h2>Next Steps</h2>
+  <p>
+    • Check the <a href="/api.html" style="color: var(--accent);">API Reference</a> for all endpoints<br>
+    • Explore <a href="#" style="color: var(--accent);">SDKs</a> for Python, JavaScript, Go<br>
+    • Set up <a href="#" style="color: var(--accent);">webhooks</a> for real-time updates
+  </p>
+</main>
+</body>
+</html>
